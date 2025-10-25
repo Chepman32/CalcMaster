@@ -7,9 +7,11 @@ import { StyleSheet } from 'react-native';
 // Screens
 import { SplashScreen } from './screens/splash/SplashScreen';
 import { MainCalculator } from './screens/calculator/MainCalculator';
+import { GraphingCalculator } from './screens/graph/GraphingCalculator';
 import { HistoryScreen } from './screens/history/HistoryScreen';
 import { UnitConverter } from './screens/converter/UnitConverter';
 import { SettingsScreen } from './screens/settings/SettingsScreen';
+import { PremiumScreen } from './screens/premium/PremiumScreen';
 
 // Store
 import { useCalculatorStore } from './store/calculatorStore';
@@ -68,6 +70,16 @@ const App: React.FC = () => {
             }}
           />
           <Tab.Screen
+            name="Graph"
+            component={GraphingCalculator}
+            options={{
+              tabBarLabel: 'Graph',
+              tabBarIcon: ({ color, size }) => (
+                <TabIcon name="graph" color={color} size={size} />
+              ),
+            }}
+          />
+          <Tab.Screen
             name="History"
             component={HistoryScreen}
             options={{
@@ -84,6 +96,16 @@ const App: React.FC = () => {
               tabBarLabel: 'Converter',
               tabBarIcon: ({ color, size }) => (
                 <TabIcon name="swap" color={color} size={size} />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Premium"
+            component={PremiumScreen}
+            options={{
+              tabBarLabel: 'Premium',
+              tabBarIcon: ({ color, size }) => (
+                <TabIcon name="premium" color={color} size={size} />
               ),
             }}
           />
@@ -112,8 +134,10 @@ const TabIcon: React.FC<{ name: string; color: string; size: number }> = ({
   const { Text } = require('react-native');
   const icons: Record<string, string> = {
     calculator: '🔢',
+    graph: '📊',
     history: '📋',
     swap: '🔄',
+    premium: '⭐',
     settings: '⚙️',
   };
 

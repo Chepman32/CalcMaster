@@ -9,6 +9,7 @@ import Animated, {
 import { ButtonConfig } from '../../constants/calculatorLayouts';
 import { useCalculatorStore } from '../../store/calculatorStore';
 import { getTheme } from '../../theme';
+import { HapticService } from '../../utils/haptics';
 
 interface CalculatorButtonProps {
   config: ButtonConfig;
@@ -25,6 +26,7 @@ export const CalculatorButton: React.FC<CalculatorButtonProps> = ({
 }) => {
   const scale = useSharedValue(1);
   const isDarkMode = useCalculatorStore((state) => state.isDarkMode);
+  const settings = useCalculatorStore((state) => state.settings);
   const theme = getTheme(isDarkMode);
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -36,6 +38,30 @@ export const CalculatorButton: React.FC<CalculatorButtonProps> = ({
       damping: 15,
       stiffness: 150,
     });
+
+    // Trigger haptic feedback based on button type
+    if (settings.hapticEnabled) {
+      switch (config.type) {
+        case 'number':
+          HapticService.numberPress();
+          break;
+        case 'operator':
+          HapticService.operatorPress();
+          break;
+        case 'function':
+          HapticService.functionPress();
+          break;
+        case 'special':
+          if (config.value === 'equals') {
+            HapticService.equalsPress();
+          } else if (config.value === 'clear') {
+            HapticService.clearPress();
+          } else {
+            HapticService.operatorPress();
+          }
+          break;
+      }
+    }
   };
 
   const handlePressOut = () => {
@@ -82,6 +108,10 @@ export const CalculatorButton: React.FC<CalculatorButtonProps> = ({
       onPressOut={handlePressOut}
       onPress={() => onPress(config.value)}
       activeOpacity={0.9}
+      accessible={true}
+      accessibilityLabel={`${config.label} ${config.type === 'operator' ? 'operator' : config.type === 'number' ? 'number' : 'function'}`}
+      accessibilityRole="button"
+      accessibilityHint={`Tap to input ${config.label}`}
     >
       <Text style={[styles.buttonText, { color: getTextColor() }]}>
         {config.label}
